@@ -14,7 +14,7 @@ import com.intellij.openapi.actionSystem._
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.ex.util.EditorUtil
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowManager}
 import com.intellij.ui.content.{Content, ContentFactory}
@@ -29,7 +29,7 @@ import org.jetbrains.sbt.shell.SbtShellRunner._
 import scala.collection.JavaConverters._
 
 class SbtShellRunner(project: Project, consoleTitle: String, debugConnection: Option[RemoteConnection])
-  extends AbstractConsoleRunnerWithHistory[LanguageConsoleImpl](project, consoleTitle, project.getBaseDir.getCanonicalPath)
+  extends AbstractConsoleRunnerWithHistory[LanguageConsoleImpl](project, consoleTitle, ProjectUtil.guessProjectDir(project).getCanonicalPath)
   with Disposable
 {
   private val log = Logger.getInstance(getClass)

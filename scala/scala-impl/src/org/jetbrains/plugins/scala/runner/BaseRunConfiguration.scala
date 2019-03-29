@@ -4,7 +4,7 @@ package runner
 import com.intellij.execution.configurations.{ConfigurationFactory, JavaParameters, ModuleBasedConfiguration, RunConfigurationModule}
 import com.intellij.execution.{CantRunException, ExecutionException}
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.projectRoots.{JavaSdkType, JdkUtil}
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.JDOMExternalizer
@@ -26,7 +26,7 @@ abstract class BaseRunConfiguration(val project: Project, val configurationFacto
   def consoleArgs: String = ensureUsesJavaCpByDefault(this.myConsoleArgs)
   def consoleArgs_=(s: String): Unit = this.myConsoleArgs = ensureUsesJavaCpByDefault(s)
   var javaOptions = defaultJavaOptions
-  var workingDirectory = Option(getProject.getBaseDir) map (_.getPath) getOrElse ""
+  var workingDirectory = Option(ProjectUtil.guessProjectDir(project)) map (_.getPath) getOrElse ""
   def getModule: Module = getConfigurationModule.getModule
   def getValidModules: java.util.List[Module] = getProject.modulesWithScala.toList.asJava
 

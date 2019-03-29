@@ -10,6 +10,7 @@ import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataImp
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.ui.configuration.JavaVfsSourceRootDetectionUtil;
@@ -74,7 +75,7 @@ public class IdeaSourcesAttachListener extends ExternalSystemTaskNotificationLis
 
                 VirtualFile libraryRoot = application.runReadAction((Computable<VirtualFile>) () -> {
                     for (LibraryOrderEntry entry : sourcesless) {
-                        VirtualFile root = findDirectory(entry, project.getBaseDir());
+                        VirtualFile root = findDirectory(entry, ProjectUtil.guessProjectDir(project));
                         if (root != null) return root;
                     }
                     return null;

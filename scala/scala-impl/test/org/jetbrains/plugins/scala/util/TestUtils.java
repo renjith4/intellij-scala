@@ -19,6 +19,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
@@ -48,7 +49,7 @@ public class TestUtils {
   public static final String END_MARKER = "<end>";
 
   public static PsiFile createPseudoPhysicalScalaFile(final Project project, final String text) throws IncorrectOperationException {
-    String TEMP_FILE = project.getBaseDir() + "temp.scala";
+    String TEMP_FILE = ProjectUtil.guessProjectDir(project) + "temp.scala";
     return PsiFileFactory.getInstance(project).createFileFromText(
         TEMP_FILE,
         FileTypeManager.getInstance().getFileTypeByFileName(TEMP_FILE),

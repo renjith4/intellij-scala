@@ -12,7 +12,7 @@ import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.execution.{ExecutionResult, Executor, OutputListener}
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.util.{JDOMExternalizer, Key}
@@ -51,7 +51,7 @@ class SbtRunConfiguration(val project: Project, val configurationFactory: Config
   
   protected var isUsingSbtShell: Boolean = true
 
-  private def defaultWorkingDirectory = Option(project.getBaseDir).fold("")(_.getPath)
+  private def defaultWorkingDirectory = Option(ProjectUtil.guessProjectDir(project)).fold("")(_.getPath)
 
   override def getValidModules: util.Collection[Module] = new java.util.ArrayList
 

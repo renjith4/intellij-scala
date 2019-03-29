@@ -7,16 +7,22 @@ import org.jetbrains.plugins.scala.lang.formatting.scalafmt.dynamic.ScalafmtDyna
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
 import org.jetbrains.plugins.scala.util.TestUtils
 
-trait ScalaFmtTestBase extends AbstractScalaFormatterTestBase {
+abstract class ScalaFmtTestBase extends AbstractScalaFormatterTestBase {
   override def setUp(): Unit = {
-    super.setUp()
-    val scalaSettings = getScalaSettings
-    scalaSettings.FORMATTER = ScalaCodeStyleSettings.SCALAFMT_FORMATTER
-    scalaSettings.SCALAFMT_USE_INTELLIJ_FORMATTER_FOR_RANGE_FORMAT = false
-    scalaSettings.SCALAFMT_SHOW_INVALID_CODE_WARNINGS = false
+    try {
+      super.setUp()
+      val scalaSettings = getScalaSettings
+      scalaSettings.FORMATTER = ScalaCodeStyleSettings.SCALAFMT_FORMATTER
+      scalaSettings.SCALAFMT_USE_INTELLIJ_FORMATTER_FOR_RANGE_FORMAT = false
+      scalaSettings.SCALAFMT_SHOW_INVALID_CODE_WARNINGS = false
 
-    // emulate  `beforeAll` or `setupAll` that is not available in AbstractScalaFormatterTestBase
-    ScalaFmtTestBase.initDefaultScalafmtVersion
+      // emulate  `beforeAll` or `setupAll` that is not available in AbstractScalaFormatterTestBase
+      ScalaFmtTestBase.initDefaultScalafmtVersion
+    } catch {
+      case e: Exception=>
+        try { tearDown() } catch { case _: Exception => }
+        throw e
+    }
   }
 
   val configPath = TestUtils.getTestDataPath + "/formatter/scalafmt/"

@@ -13,7 +13,7 @@ import com.intellij.openapi.actionSystem.impl.ActionManagerImpl
 import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.project.ex.ProjectManagerEx
-import com.intellij.openapi.project.{DumbService, Project, ProjectManager}
+import com.intellij.openapi.project.{DumbService, Project, ProjectManager, ProjectUtil}
 import com.intellij.openapi.startup.StartupManager
 import com.intellij.openapi.util.Condition
 import com.intellij.profile.codeInspection.InspectionProjectProfileManager
@@ -132,7 +132,7 @@ object MemoryLeakTest {
 
   private def findFile(fileName: String)
                       (implicit project: ProjectContext): PsiFile = {
-    val file = project.getBaseDir.findChild("src").findChild(fileName)
+    val file = ProjectUtil.guessProjectDir(project).findChild("src").findChild(fileName)
     PsiManager.getInstance(project).findFile(file)
   }
 

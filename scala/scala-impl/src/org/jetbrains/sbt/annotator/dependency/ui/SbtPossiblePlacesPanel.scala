@@ -11,7 +11,7 @@ import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory
 import com.intellij.openapi.editor.markup.{HighlighterLayer, HighlighterTargetArea}
 import com.intellij.openapi.editor.{Editor, EditorFactory, LogicalPosition, ScrollType}
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.ui._
 import com.intellij.ui.components.JBList
 import javax.swing._
@@ -63,7 +63,7 @@ private class SbtPossiblePlacesPanel(project: Project, wizard: SbtArtifactSearch
   }
 
   private def updateEditor(myCurFileLine: DependencyPlaceInfo): Unit = {
-    val document    = FileDocumentManager.getInstance.getDocument(project.getBaseDir.findFileByRelativePath(myCurFileLine.path))
+    val document    = FileDocumentManager.getInstance.getDocument(ProjectUtil.guessProjectDir(project).findFileByRelativePath(myCurFileLine.path))
     val tmpFile     = ScalaPsiElementFactory.createScalaFileFromText(document.getText)(project)
     var tmpElement  = tmpFile.findElementAt(myCurFileLine.element.getTextOffset)
     while (tmpElement.getTextRange != myCurFileLine.element.getTextRange) {

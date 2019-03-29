@@ -19,7 +19,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.options.{SettingsEditor, SettingsEditorGroup}
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.projectRoots.{JdkUtil, ProjectJdkTable}
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.util.{Computable, Getter, JDOMExternalizer}
@@ -124,7 +124,7 @@ abstract class AbstractTestRunConfiguration(val project: Project,
     val module = getModule
     TestWorkingDirectoryProvider.EP_NAME.getExtensions.find(_.getWorkingDirectory(module) != null) match {
       case Some(provider) => provider.getWorkingDirectory(module)
-      case _ => Option(getProject.getBaseDir).map(_.getPath).getOrElse("")
+      case _ => Option(ProjectUtil.guessProjectDir(project)).map(_.getPath).getOrElse("")
     }
   }
 

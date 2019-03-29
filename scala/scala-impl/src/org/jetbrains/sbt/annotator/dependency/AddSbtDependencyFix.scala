@@ -11,7 +11,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.module.{ModuleManager, ModuleUtilCore}
 import com.intellij.openapi.progress.{ProgressIndicator, ProgressManager, Task}
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.{PsiElement, PsiFile, PsiManager, SmartPsiElementPointer}
@@ -69,7 +69,7 @@ private class AddSbtDependencyFix(refElement: SmartPsiElementPointer[ScReference
       if filtered.nonEmpty
     } yield filtered
 
-    val baseDir: VirtualFile = project.getBaseDir
+    val baseDir: VirtualFile = ProjectUtil.guessProjectDir(project)
     val sbtFileOpt = baseDir.findChild(Sbt.BuildFile) match {
       case buildFile if buildFile != null && buildFile.exists() => Some(buildFile)
       case _ => baseDir.getChildren.find(language.SbtFileType.isMyFileType)

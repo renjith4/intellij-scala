@@ -3,7 +3,7 @@ package org.jetbrains.plugins.scala.lang.formatting.scalafmt
 import com.intellij.application.options.codeStyle.CodeStyleSchemesModel
 import com.intellij.notification._
 import com.intellij.openapi.components.{PersistentStateComponent, _}
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import javax.swing.event.HyperlinkEvent
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
@@ -27,7 +27,7 @@ class ScalaFmtSuggesterComponent(val project: Project) extends ProjectComponent 
   }
 
   private def projectHasScalafmtDefaultConfigFile: Boolean = {
-    project.getBaseDir.toOption
+    ProjectUtil.guessProjectDir(project).toOption
       .flatMap(_.findChild(ScalafmtDynamicConfigManager.DefaultConfigurationFileName).toOption)
       .nonEmpty
   }

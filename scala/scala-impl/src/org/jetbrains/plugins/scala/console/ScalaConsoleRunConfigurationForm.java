@@ -4,6 +4,7 @@ import com.intellij.execution.ui.ConfigurationModuleSelector;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.RawCommandLineEditor;
@@ -44,7 +45,7 @@ public class ScalaConsoleRunConfigurationForm {
     consoleArgsEditor.setDialogCaption("Console arguments editor");
     consoleArgsEditor.setText("-usejavacp");
     addFileChooser("Choose Working Directory", workingDirectoryField, project);
-    VirtualFile baseDir = project.getBaseDir();
+    VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
     String path = baseDir != null ? baseDir.getPath() : "";
     workingDirectoryField.setText(path);
   }

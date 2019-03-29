@@ -7,7 +7,7 @@ import com.intellij.notification.{Notification, NotificationGroup, NotificationL
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
 import com.intellij.openapi.externalSystem.service.project.ProjectDataManager
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.startup.StartupActivity
 import org.jetbrains.sbt.Sbt
 import org.jetbrains.sbt.project.SbtStartupActivity.sbtNotificationGroup
@@ -23,7 +23,7 @@ class SbtStartupActivity extends StartupActivity {
   private def showNotificationForUnlinkedSbtProject(project: Project): Unit =
     if (SbtSettings.getInstance(project).getLinkedProjectsSettings.isEmpty &&
       project.getUserData(ExternalSystemDataKeys.NEWLY_IMPORTED_PROJECT) != java.lang.Boolean.TRUE &&
-      SbtProjectImportProvider.canImport(project.getBaseDir)
+      SbtProjectImportProvider.canImport(ProjectUtil.guessProjectDir(project))
     ) {
       val message = s"""<a href="$ImportDescription">Import sbt project</a>"""
 

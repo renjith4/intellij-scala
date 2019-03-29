@@ -12,7 +12,7 @@ import com.intellij.execution.process.{OSProcessHandler, ProcessAdapter, Process
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.module.{Module, ModuleManager}
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.projectRoots.ex.PathUtilEx
 import com.intellij.openapi.projectRoots.{JdkUtil, Sdk}
 import com.intellij.openapi.roots._
@@ -157,7 +157,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val jdk: Sdk = PathUtilEx.getAnyJdk(project)
     assert(jdk != null, "JDK IS NULL")
     jp.configureByProject(project, JavaParameters.JDK_AND_CLASSES_AND_TESTS, jdk)
-    jp.setWorkingDirectory(project.getBaseDir.getPath)
+    jp.setWorkingDirectory(ProjectUtil.guessProjectDir(project).getPath)
 
     val scalaModule = project.anyScalaModule.getOrElse {
       throw new ExecutionException("No modules with Scala SDK are configured")

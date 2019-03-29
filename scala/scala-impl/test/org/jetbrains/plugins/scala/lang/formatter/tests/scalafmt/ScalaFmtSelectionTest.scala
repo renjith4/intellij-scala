@@ -3,7 +3,7 @@ package org.jetbrains.plugins.scala.lang.formatter.tests.scalafmt
 import org.jetbrains.plugins.scala.lang.formatter.tests.SelectionTest
 
 //noinspection RedundantBlock
-class ScalaFmtSelectionTest extends SelectionTest with ScalaFmtTestBase {
+class ScalaFmtSelectionTest extends ScalaFmtTestBase with  SelectionTest {
 
   def testExprSelection(): Unit = {
     val before =

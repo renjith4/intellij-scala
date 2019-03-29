@@ -4,7 +4,7 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.vfs.{StandardFileSystems, VirtualFile}
 import com.intellij.psi.{PsiElement, PsiFile}
 import com.typesafe.config.{ConfigException, ConfigFactory}
@@ -218,15 +218,14 @@ class ScalafmtDynamicConfigManager(implicit project: Project) extends ProjectCom
     }
 
   private def defaultConfigurationFile: Option[VirtualFile] =
-    project.getBaseDir.toOption
+    ProjectUtil.guessProjectDir(project).toOption
       .flatMap(_.findChild(DefaultConfigurationFileName).toOption)
 
-  def absolutePathFromConfigPath(path: String): Option[String] = {
-    project.getBaseDir.toOption.map { baseDir =>
+  def absolutePathFromConfigPath(path: String): Option[String] =
+    ProjectUtil.guessProjectDir(project).toOption.map { baseDir =>
       if (path.startsWith(".")) baseDir.getCanonicalPath + "/" + path
       else path
     }
-  }
 }
 
 object ScalafmtDynamicConfigManager {

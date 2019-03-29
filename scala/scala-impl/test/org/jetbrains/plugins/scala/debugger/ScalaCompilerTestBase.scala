@@ -8,6 +8,7 @@ import com.intellij.compiler.{CompilerConfiguration, CompilerTestUtil}
 import com.intellij.openapi.application.ex.ApplicationManagerEx
 import com.intellij.openapi.compiler._
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.ProjectUtil
 import com.intellij.openapi.projectRoots._
 import com.intellij.openapi.roots._
 import com.intellij.openapi.util.text.StringUtil
@@ -172,7 +173,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaSdkOwner {
   }
 
   protected def getBaseDir: VirtualFile = {
-    val baseDir = myProject.getBaseDir
+    val baseDir = ProjectUtil.guessProjectDir(project)
     assertNotNull(baseDir)
     baseDir
   }

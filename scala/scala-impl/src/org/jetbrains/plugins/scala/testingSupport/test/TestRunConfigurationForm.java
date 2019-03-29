@@ -13,6 +13,7 @@ import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
@@ -251,7 +252,7 @@ public class TestRunConfigurationForm {
     moduleComboBox.setEnabled(true);
     addClassChooser("Choose test class", testClassTextField, project);
     addFileChooser("Choose Working Directory", workingDirectoryField, project);
-    VirtualFile baseDir = project.getBaseDir();
+    VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
     String path = baseDir != null ? baseDir.getPath() : "";
     workingDirectoryField.setText(path);
     addPackageChooser(testPackageTextField, project);
