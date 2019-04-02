@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base._
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeElement
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
+import org.jetbrains.plugins.scala.lang.psi.controlFlow.impl.statements.ScVariableDeclarationCfgBuildingImpl
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScPropertyStub
 import org.jetbrains.plugins.scala.lang.psi.stubs.elements.ScPropertyElementType
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypeResult
@@ -22,7 +23,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypeResult
 final class ScVariableDeclarationImpl private[psi](stub: ScPropertyStub[ScVariableDeclaration],
                                                    nodeType: ScPropertyElementType[ScVariableDeclaration],
                                                    node: ASTNode)
-  extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScVariableDeclaration with ScVariableDeclarationAnnotator {
+  extends ScalaStubBasedElementImpl(stub, nodeType, node)
+    with ScVariableDeclaration with ScVariableDeclarationAnnotator with ScVariableDeclarationCfgBuildingImpl {
 
   override def toString: String = "ScVariableDeclaration: " + ifReadAllowed(declaredNames.mkString(", "))("")
 
