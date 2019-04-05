@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiDocumentManager, PsiElement, PsiFile}
 import org.jetbrains.plugins.scala.extensions.PsiElementExt
+import org.jetbrains.plugins.scala.project.ProjectExt
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import org.scalastyle._
 
@@ -21,7 +22,7 @@ object ScalastyleCodeInspection {
     def findConfigFile(dir: VirtualFile): Option[VirtualFile] = possibleConfigFileNames.flatMap(name => Option(dir.findChild(name))).headOption
 
     def findIn(project: Project): Option[VirtualFile] = {
-      val root = project.getBaseDir
+      val root = project.baseDir
       if (root == null) return None
 
       val dirs = possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root

@@ -10,13 +10,13 @@ import com.intellij.psi.{PsiElement, PsiFile}
 import com.typesafe.config.{ConfigException, ConfigFactory}
 import org.jetbrains.plugins.scala.extensions.{inWriteAction, _}
 import org.jetbrains.plugins.scala.lang.formatting.OpenFileNotificationActon
-import org.jetbrains.plugins.scala.lang.formatting.processors.ScalaFmtPreFormatProcessor
 import org.jetbrains.plugins.scala.lang.formatting.scalafmt.ScalafmtDynamicConfigManager._
 import org.jetbrains.plugins.scala.lang.formatting.scalafmt.ScalafmtDynamicService.{DefaultVersion, ScalafmtResolveError, ScalafmtVersion}
 import org.jetbrains.plugins.scala.lang.formatting.scalafmt.ScalafmtNotifications.FmtVerbosity
 import org.jetbrains.plugins.scala.lang.formatting.scalafmt.dynamic.exceptions.ScalafmtConfigException
 import org.jetbrains.plugins.scala.lang.formatting.scalafmt.dynamic.{ScalafmtDynamicConfig, ScalafmtReflect}
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
+import org.jetbrains.plugins.scala.project.ProjectExt
 import org.jetbrains.plugins.scala.util.ScalaCollectionsUtil
 import org.jetbrains.sbt.language.SbtFileImpl
 
@@ -218,11 +218,11 @@ class ScalafmtDynamicConfigManager(implicit project: Project) extends ProjectCom
     }
 
   private def defaultConfigurationFile: Option[VirtualFile] =
-    project.getBaseDir.toOption
+    project.baseDir.toOption
       .flatMap(_.findChild(DefaultConfigurationFileName).toOption)
 
   def absolutePathFromConfigPath(path: String): Option[String] = {
-    project.getBaseDir.toOption.map { baseDir =>
+    project.baseDir.toOption.map { baseDir =>
       if (path.startsWith(".")) baseDir.getCanonicalPath + "/" + path
       else path
     }

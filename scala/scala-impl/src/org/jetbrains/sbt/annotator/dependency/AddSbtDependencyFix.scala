@@ -23,7 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScInfixExpr
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScPatternDefinition
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.imports.ScImportExpr
 import org.jetbrains.plugins.scala.lang.psi.impl.source.ScalaCodeFragment
-import org.jetbrains.plugins.scala.project.ModuleExt
+import org.jetbrains.plugins.scala.project.{ModuleExt, ProjectExt}
 import org.jetbrains.sbt.project.SbtProjectSystem
 import org.jetbrains.sbt.resolvers.{ArtifactInfo, SbtResolver}
 import org.jetbrains.sbt.settings.SbtSettings
@@ -69,7 +69,7 @@ private class AddSbtDependencyFix(refElement: SmartPsiElementPointer[ScReference
       if filtered.nonEmpty
     } yield filtered
 
-    val baseDir: VirtualFile = project.getBaseDir
+    val baseDir: VirtualFile = project.baseDir
     val sbtFileOpt = baseDir.findChild(Sbt.BuildFile) match {
       case buildFile if buildFile != null && buildFile.exists() => Some(buildFile)
       case _ => baseDir.getChildren.find(language.SbtFileType.isMyFileType)

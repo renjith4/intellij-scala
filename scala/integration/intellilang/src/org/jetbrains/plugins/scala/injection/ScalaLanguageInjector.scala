@@ -310,7 +310,7 @@ object ScalaLanguageInjector {
   }
   
   def withInjectionSupport[T](action: LanguageInjectionSupport => T): Option[T] =
-    Extensions getExtensions LanguageInjectionSupport.EP_NAME find (_.getId == "scala") map action
+    LanguageInjectionSupport.EP_NAME.getExtensionList.asScala find (_.getId == "scala") map action
   
   def performSimpleInjection(literals: scala.Seq[ScLiteral], injectedLanguage: InjectedLanguage, 
                              injection: BaseInjection, host: PsiElement, registrar: MultiHostRegistrar,
