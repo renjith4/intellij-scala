@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.annotator.ScLiteralAnnotator
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base.{ScInterpolatedStringLiteral, ScLiteral}
+import org.jetbrains.plugins.scala.lang.psi.controlFlow.impl.expr.ScLiteralCfgBuildingImpl
 import org.jetbrains.plugins.scala.lang.psi.impl.expr.ScExpressionImplBase
 import org.jetbrains.plugins.scala.lang.psi.types._
 import org.jetbrains.plugins.scala.lang.psi.types.result._
@@ -33,7 +34,7 @@ import scala.StringContext.InvalidEscapeException
 */
 
 class ScLiteralImpl(node: ASTNode) extends ScExpressionImplBase(node)
-  with ScLiteral with ContributedReferenceHost with ScLiteralAnnotator {
+  with ScLiteral with ContributedReferenceHost with ScLiteralAnnotator with ScLiteralCfgBuildingImpl {
 
   def isValidHost: Boolean = getValue.isInstanceOf[String]
 
