@@ -236,11 +236,13 @@ object ScalaPsiElementFactory {
 
   def createImplicitClauseFromTextWithContext(clauses: Seq[String],
                                               context: PsiElement,
-                                              isClassParameter: Boolean): Option[ScParameterClause] =
+                                              isClassParameter: Boolean): ScParameterClause =
     if (clauses.nonEmpty) {
       val parse: ScalaPsiBuilder => Boolean = if (isClassParameter) ImplicitClassParamClause.parse else ImplicitParamClause.parse
-      createElementWithContext[ScParameterClause](s"(implicit ${clauses.commaSeparated()})", context, contextLastChild(context), parse)
-    } else None
+      createElementWithContext[ScParameterClause](s"(implicit ${clauses.commaSeparated()})", context, contextLastChild(context), parse).orNull
+    } else {
+      throw new IllegalArgumentException("At least one clause required.")
+    }
 
   def createEmptyClassParamClauseWithContext(context: PsiElement): ScParameterClause =
     createElementWithContext[ScParameterClause]("()", context, contextLastChild(context), ClassParamClause.parse).orNull

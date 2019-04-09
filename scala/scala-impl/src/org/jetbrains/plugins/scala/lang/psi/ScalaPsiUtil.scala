@@ -1143,46 +1143,45 @@ object ScalaPsiUtil {
     if (hasImplicit) return None
 
     val typeParameters = parameterOwner.typeParameters
+    if (typeParameters.isEmpty) return None
 
-    val views = typeParameters.flatMap { typeParameter =>
-      val parameterName = typeParameter.name
-      typeParameter.viewTypeElement.map { typeElement =>
-        val needParenthesis = typeElement match {
-          case _: ScCompoundTypeElement |
-               _: ScInfixTypeElement |
-               _: ScFunctionalTypeElement |
-               _: ScExistentialTypeElement => true
-          case _ => false
-        }
+    def typeElementsWithName(function: ScTypeParam => Seq[ScTypeElement]) =
+      for {
+        typeParameter <- typeParameters
+        typeElement <- function(typeParameter)
+      } yield (typeParameter.name, typeElement)
 
-        val elementText = typeElement.getText.parenthesize(needParenthesis)
-        import typeElement.projectContext
-        s"$parameterName $functionArrow $elementText"
+    val viewTypeElements = typeElementsWithName(_.viewTypeElement)
+    val views = for {
+      ((parameterName, element@ElementText(text)), index) <- viewTypeElements.zipWithIndex
+
+      needParenthesis = element match {
+        case _: ScCompoundTypeElement |
+             _: ScInfixTypeElement |
+             _: ScFunctionalTypeElement |
+             _: ScExistentialTypeElement => true
+        case _ => false
       }
-    }
+    } yield s"ev$$${index + 1}: $parameterName ${functionArrow(element)} ${text.parenthesize(needParenthesis)}"
 
-    val bounds = typeParameters.flatMap { typeParameter =>
-      val parameterName = typeParameter.name
-      typeParameter.contextBoundTypeElement.map { typeElement =>
-        val syntheticName = contextBoundParameterName(parameterName, typeElement)
-        s"`$syntheticName` : (${typeElement.getText})[$parameterName]"
-      }
-    }
+    val boundTypeElements = typeElementsWithName(_.contextBoundTypeElement)
+    val bounds = for {
+      (parameterName, bound@ElementText(text)) <- boundTypeElements
+    } yield s"`${contextBoundParameterName(parameterName, bound)}` : ($text)[$parameterName]"
 
-    val clauses = views.zipWithIndex.map {
-      case (text, index) => s"ev$$${index + 1}: $text"
-    } ++ bounds
+    val clauses = views ++ bounds
+    if (clauses.isEmpty) return None
 
     val result = createImplicitClauseFromTextWithContext(clauses, paramClauses, isClassParameter)
-    result.toSeq
-      .flatMap(_.parameters)
+
+    result.parameters
       .flatMap(_.typeElement)
-      .zip(typeParameters.flatMap(_.viewTypeElement) ++ typeParameters.flatMap(_.contextBoundTypeElement))
+      .zip(viewTypeElements ++ boundTypeElements)
       .foreach {
-        case (typeElement, context) => context.analog = typeElement
+        case (typeElement, (_, context)) => context.analog = typeElement
       }
 
-    result
+    Some(result)
   }
 
   //todo: fix it
