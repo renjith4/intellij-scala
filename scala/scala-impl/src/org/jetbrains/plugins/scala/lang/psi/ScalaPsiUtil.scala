@@ -1108,23 +1108,30 @@ object ScalaPsiUtil {
     }
   }
 
-  private def contextBoundParameterName(typeParameter: ScTypeParam, bound: ScTypeElement): String = {
+  private def contextBoundParameterName(typeParameterName: String, bound: ScTypeElement): String = {
     val boundName = bound match {
       case ScSimpleTypeElement(Some(ref)) => ref.refName
-      case projection: ScTypeProjection   => projection.refName
-      case _                              => bound.getText
+      case projection: ScTypeProjection => projection.refName
+      case ElementText(name) => name
     }
-    val tpName = typeParameter.name
-    StringUtil.decapitalize(s"$boundName$$$tpName")
+
+    StringUtil.decapitalize(boundName + "$" + typeParameterName)
   }
 
-  def originalContextBound(parameter: ScParameter): Option[(ScTypeParam, ScTypeElement)] = {
-    if (parameter.isPhysical) return None
+  def originalContextBound(parameter: ScParameter): Option[(ScTypeParam, ScTypeElement)] =
+    if (parameter.isPhysical) None
+    else {
+      parameter.owner match {
+        case owner: ScTypeParametersOwner =>
+          val pairs = for {
+            typeParameter <- owner.typeParameters.iterator
+            typeElement <- typeParameter.contextBoundTypeElement
+          } yield (typeParameter, typeElement)
 
-    val ownerTypeParams = parameter.owner.asOptionOf[ScTypeParametersOwner].toSeq.flatMap(_.typeParameters)
-    val bounds = ownerTypeParams.flatMap(tp => tp.contextBoundTypeElement.map((tp, _)))
-    bounds.find {
-      case (tp, te) => contextBoundParameterName(tp, te) == parameter.name
+          pairs.find {
+            case (typeParameter, typeElement) => contextBoundParameterName(typeParameter.name, typeElement) == parameter.name
+          }
+        case _ => None
     }
   }
 
@@ -1157,7 +1164,7 @@ object ScalaPsiUtil {
     val bounds = typeParameters.flatMap { typeParameter =>
       val parameterName = typeParameter.name
       typeParameter.contextBoundTypeElement.map { typeElement =>
-        val syntheticName = contextBoundParameterName(typeParameter, typeElement)
+        val syntheticName = contextBoundParameterName(parameterName, typeElement)
         s"`$syntheticName` : (${typeElement.getText})[$parameterName]"
       }
     }
